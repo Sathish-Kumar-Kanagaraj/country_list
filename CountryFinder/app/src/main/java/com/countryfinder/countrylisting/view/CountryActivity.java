@@ -12,15 +12,12 @@ import com.countryfinder.GridSpaceItemDecoration;
 import com.countryfinder.R;
 import com.countryfinder.countrylisting.model.Locations;
 import com.countryfinder.countrylisting.viewmodel.CountryViewModel;
-import com.countryfinder.server.ICountryAPIServices;
 
 import java.util.List;
 
 public class CountryActivity extends AppCompatActivity {
 
     RecyclerView countryRecycler;
-
-    ICountryAPIServices iCountryAPIServices;
 
     private CountryViewModel mCountryViewModel;
 
@@ -41,12 +38,17 @@ public class CountryActivity extends AppCompatActivity {
         countryRecycler.setAdapter(countryAdapter);
 
         mCountryViewModel = ViewModelProviders.of(this).get(CountryViewModel.class);
-        mCountryViewModel.getCountryList().observe(this, new Observer<List<Locations>>() {
+        mCountryViewModel.getLocationList().observe(this, new Observer<List<Locations>>() {
             @Override
             public void onChanged(List<Locations> locations) {
                 countryAdapter.setCountryList((List<Locations>) locations);
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }
