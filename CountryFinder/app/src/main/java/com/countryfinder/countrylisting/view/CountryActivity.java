@@ -1,8 +1,10 @@
 package com.countryfinder.countrylisting.view;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,6 +21,8 @@ public class CountryActivity extends AppCompatActivity {
 
     RecyclerView countryRecycler;
 
+    SearchView searchView;
+
     private CountryViewModel mCountryViewModel;
 
     private CountryAdapter countryAdapter;
@@ -29,6 +33,7 @@ public class CountryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_country);
 
         countryRecycler = findViewById(R.id.recycler_country);
+        searchView = findViewById(R.id.search_view);
         countryAdapter = new CountryAdapter(this);
 
         GridLayoutManager countryGridLayout = new GridLayoutManager(this, 2);
@@ -45,10 +50,20 @@ public class CountryActivity extends AppCompatActivity {
             }
         });
 
-    }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+              //  Toast.makeText(CountryActivity.this, query, Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                countryAdapter.setFilter(newText);
+                Toast.makeText(CountryActivity.this, "new text:" + newText, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
     }
 }

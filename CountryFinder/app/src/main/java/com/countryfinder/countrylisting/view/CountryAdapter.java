@@ -15,10 +15,13 @@ import com.countryfinder.Utils;
 import com.countryfinder.countrylisting.model.Locations;
 
 import java.util.List;
+import java.util.Locale;
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryViewHolder> {
 
     List<Locations> mCountryList;
+
+    List<Locations> locationsSearchList;
 
     private Context mContext;
 
@@ -35,14 +38,14 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
 
     @Override
     public void onBindViewHolder(@NonNull CountryViewHolder holder, int position) {
-        Utils.glideLoadImage(mContext, mCountryList.get(position).getCountryFlagImage(), holder.countryImage);
-        holder.countryTitleText.setText(mCountryList.get(position).getCountryName());
+        Utils.glideLoadImage(mContext, locationsSearchList.get(position).getCountryFlagImage(), holder.countryImage);
+        holder.countryTitleText.setText(locationsSearchList.get(position).getCountryName());
     }
 
     @Override
     public int getItemCount() {
-        if (mCountryList != null) {
-            return mCountryList.size();
+        if (locationsSearchList != null) {
+            return locationsSearchList.size();
         } else {
             return 0;
         }
@@ -50,6 +53,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
 
     public void setCountryList(List<Locations> countryList) {
         this.mCountryList = countryList;
+        this.locationsSearchList=countryList;
         notifyDataSetChanged();
     }
 
@@ -64,6 +68,22 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.CountryV
             countryImage = itemView.findViewById(R.id.image_country);
             countryTitleText = itemView.findViewById(R.id.text_country_title);
         }
+    }
+
+    public void setFilter(String searchQuery) {
+
+        locationsSearchList.clear();
+        if (searchQuery.length() == 0) {
+            locationsSearchList.addAll(mCountryList);
+        } else {
+            searchQuery = searchQuery.toLowerCase(Locale.getDefault());
+            for (Locations locations : mCountryList) {
+                if (locations.getCountryName().toLowerCase().contains(searchQuery)) {
+                    locationsSearchList.add(locations);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }
